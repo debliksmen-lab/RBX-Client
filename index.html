@@ -1,775 +1,345 @@
 <!DOCTYPE html>
-<html lang="ru" class="scroll-smooth">
+<html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
-  <meta name="referrer" content="strict-origin-when-cross-origin" />
-  <title>RBX Client 1.4.5 by Kilon — Десктопный лаунчер и каталог игр Roblox</title>
-  
-  <script src="https://unpkg.com"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    if (window.top !== window.self) {
-      try { window.top.location = window.self.location; } catch (_e) { document.documentElement.innerHTML = ""; }
-    }
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: {
-            sans: ['Inter', 'Segoe UI', 'system-ui', '-apple-system', 'sans-serif'],
-          },
-        },
-      },
-    };
-  </script>
-  <style>
-    :root { color-scheme: dark; }
-    body {
-      font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
-      background-color: #0B0E11;
-      color: #E6EDF3;
-      overflow-x: hidden;
-    }
-    ::-webkit-scrollbar { width: 8px; height: 8px; }
-    ::-webkit-scrollbar-track { background: #0B0E11; }
-    ::-webkit-scrollbar-thumb { background: #1E242E; border-radius: 6px; }
-    ::-webkit-scrollbar-thumb:hover { background: #2D3646; }
-    .surface-card { background-color: #12161D; border: 1px solid #1E242E; border-radius: 10px; }
-    .surface-card-hover { transition: border-color 0.14s ease, background-color 0.14s ease; }
-    .surface-card-hover:hover { border-color: #334155; background-color: #151A23; }
-    .game-thumb-wrap { position: relative; background-color: #161B22; aspect-ratio: 1 / 1; overflow: hidden; }
-    @keyframes thumbShimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
-    .game-thumb-skeleton {
-      position: absolute; inset: 0;
-      background: linear-gradient(90deg, #161B22 25%, #1D2430 50%, #161B22 75%);
-      background-size: 200% 100%;
-      animation: thumbShimmer 1.4s infinite linear;
-      transition: opacity 0.22s ease;
-    }
-    .game-thumb-skeleton.is-hidden { opacity: 0; pointer-events: none; }
-    .game-thumb-img { width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 0.24s ease; }
-    .game-thumb-img.is-loaded { opacity: 1; }
-    .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-    @keyframes modalOpen { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
-    .modal-panel { animation: modalOpen 0.15s ease-out forwards; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>RBX Client 1.4.5 — официальный сайт лаунчера Roblox by Kilon</title>
+<meta name="description" content="RBX Client 1.4.5 by Kilon — лаунчер Roblox для Windows: FastFlags, FPS Unlocker, шейдеры, Server Hopper, RBX AI и защита RBX Shield.">
+<style id="ab">html{display:none!important}</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+:root{color-scheme:dark;--bg:#0B0E11;--card:#12161D;--bd:#1E242E;--ac:#2563EB;--tx:#E6EAF0;--mu:#8B95A5}
+html{scroll-behavior:smooth;scroll-padding-top:90px}
+body{background:var(--bg);color:var(--tx);font-family:'Inter',system-ui,sans-serif;padding-bottom:env(safe-area-inset-bottom,0)}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:14px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;padding:.6rem 1rem;border-radius:10px;font-weight:600;font-size:.875rem;transition:.15s;cursor:pointer;border:1px solid var(--bd);background:var(--card);color:var(--tx);white-space:nowrap}
+.btn:hover{border-color:#2f3846;background:#171c25}
+.btn-p{background:var(--ac);border-color:var(--ac);color:#fff}.btn-p:hover{background:#1d4ed8;border-color:#1d4ed8}
+.chip{padding:.4rem .85rem;border-radius:999px;border:1px solid var(--bd);background:var(--card);color:var(--mu);font-size:.8rem;font-weight:500;cursor:pointer;transition:.15s}
+.chip:hover{color:var(--tx)}.chip.on{background:var(--ac);border-color:var(--ac);color:#fff}
+.sk{background:linear-gradient(90deg,#12161D 25%,#1b212b 50%,#12161D 75%);background-size:200% 100%;animation:sh 1.2s infinite}
+@keyframes sh{to{background-position:-200% 0}}
+.cover{position:relative;aspect-ratio:1/1;overflow:hidden;border-radius:12px 12px 0 0}
+.cover svg,.cover img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.cover img{opacity:0;transition:opacity .3s}.cover img.ok{opacity:1}
+.gc{cursor:pointer;transition:transform .15s,border-color .15s;overflow:hidden}
+.gc:hover{transform:translateY(-3px);border-color:#2f4a86}
+.dot{width:8px;height:8px;border-radius:50%;background:#22c55e;box-shadow:0 0 0 0 #22c55e88;animation:pl 2s infinite}
+@keyframes pl{70%{box-shadow:0 0 0 7px #22c55e00}}
+input:focus{outline:none}
+#modal{background:#000a;backdrop-filter:blur(4px)}
+.kbd{border:1px solid var(--bd);border-radius:6px;padding:0 .35rem;font-size:.7rem;color:var(--mu)}
+::-webkit-scrollbar{width:10px}::-webkit-scrollbar-thumb{background:#1E242E;border-radius:6px}
+</style>
 </head>
-<body class="bg-[#0B0E11] text-[#E6EDF3] antialiased selection:bg-[#2563EB]/30 selection:text-white">
-  <header class="sticky top-0 z-40 h-14 bg-[#0B0E11]/95 backdrop-blur border-b border-[#1E242E]">
-    <div class="max-w-[1360px] mx-auto px-3 sm:px-6 h-full flex items-center justify-between gap-3">
-      <div class="flex items-center gap-5 shrink-0">
-        <a href="#" class="flex items-center gap-2 text-[#E6EDF3] hover:opacity-90 transition">
-          <span class="w-7 h-7 rounded-[7px] bg-[#161B22] border border-[#263040] flex items-center justify-center text-xs font-bold text-[#60A5FA]">RX</span>
-          <span class="font-bold text-sm sm:text-[15px] tracking-tight">RBX Client</span>
-          <span class="px-1.5 py-0.5 text-[11px] font-semibold rounded-[5px] bg-[#161B22] text-[#93C5FD] border border-[#263040]">1.4.5</span>
-        </a>
-        <nav aria-label="Разделы сайта" class="hidden lg:flex items-center gap-4 text-[13px] font-medium text-[#8B949E]">
-          <a href="#catalog" class="hover:text-[#E6EDF3] transition">Каталог</a>
-          <a href="#features" class="hover:text-[#E6EDF3] transition">Модули</a>
-          <a href="#security" class="hover:text-[#E6EDF3] transition">RBX Shield</a>
-        </nav>
-      </div>
+<body>
 
-      <div class="flex-1 max-w-md relative">
-        <svg class="w-3.5 h-3.5 text-[#7D8590] absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 104.5 4.5a7.5 7.5 0 0012.15 12.15z" />
-        </svg>
-        <input id="headerSearchInput" type="text" maxlength="80" oninput="onSearchQueryChanged(this.value)" placeholder="Поиск среди всех игр Roblox или Place ID..." class="w-full h-9 pl-8 pr-14 rounded-[8px] bg-[#12161D] text-xs sm:text-[13px] text-[#E6EDF3] placeholder-[#6E7681] border border-[#1E242E] focus:outline-none focus:border-[#3B82F6] transition" />
-        <button id="headerSearchClear" type="button" onclick="clearSearchQuery()" aria-label="Очистить поиск" class="hidden absolute right-2.5 top-1/2 -translate-y-1/2 text-[11px] text-[#8B949E] hover:text-white cursor-pointer">✕</button>
-        <kbd id="headerSearchShortcut" class="hidden sm:inline-block absolute right-2.5 top-1/2 -translate-y-1/2 px-1.5 py-0.5 text-[10px] rounded bg-[#161B22] text-[#7D8590] border border-[#263040] pointer-events-none">Ctrl+K</kbd>
-      </div>
-
-      <a data-official-link="github-release" href="https://github.com" target="_blank" rel="noopener noreferrer" class="h-9 px-3 sm:px-3.5 rounded-[8px] bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-xs sm:text-[13px] font-semibold inline-flex items-center gap-1.5 shrink-0 transition">
-        <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5m0 0l5-5m-5 5V3" />
-        </svg>
-        <span class="hidden sm:inline">Скачать для Windows (.exe)</span>
-        <span class="sm:hidden">Скачать (.exe)</span>
-      </a>
-    </div>
-  </header>
-
-  <main class="max-w-[1360px] mx-auto px-3 sm:px-6 py-4 sm:py-5 space-y-6">
-    <section aria-label="Информация о лаунчере" class="surface-card p-4 sm:px-5 sm:py-4 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-      <div class="space-y-1.5 min-w-0">
-        <div class="flex flex-wrap items-center gap-2">
-          <h1 class="text-base sm:text-lg font-bold text-[#E6EDF3] tracking-tight">RBX Client 1.4.5</h1>
-          <span class="text-xs font-medium text-[#8B949E]">• Официальный разработчик и издатель: <strong class="text-[#E6EDF3] font-semibold">Kilon</strong></span>
-          <span class="px-2 py-0.5 text-[11px] font-medium rounded-[5px] bg-[#161B22] text-[#7D8590] border border-[#1E242E]">Windows 10/11</span>
-          <span id="shieldHeaderBadge" class="px-2 py-0.5 text-[11px] font-semibold rounded-[5px] bg-emerald-950/60 text-emerald-400 border border-emerald-800/50 inline-flex items-center gap-1.5">
-            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-            RBX Web Shield: Active
-          </span>
-        </div>
-        <p class="text-xs sm:text-[13px] text-[#8B949E] leading-relaxed">
-          Десктопный лаунчер для прямого запуска игр и VIP-серверов Roblox по протоколу <code class="text-[#93C5FD]">rbxclient://</code>:
-          FastFlags &amp; FPS Unlocker, кастомные шейдеры, Server Hopper по странам и пингу, вход по ссылкам и Rejoin, ChatGPT AI-помощник и многоуровневая защита RBX Shield.
-        </p>
-      </div>
-
-      <div class="flex flex-wrap items-center gap-2.5 shrink-0">
-        <a data-official-link="telegram" href="https://t.me" target="_blank" rel="noopener noreferrer" class="h-9 px-3.5 rounded-[8px] bg-[#161B22] hover:bg-[#1C222B] text-[#60A5FA] border border-[#263040] text-xs sm:text-[13px] font-medium inline-flex items-center gap-1.5 transition">
-          <span>Telegram (@RobloxLauncher)</span>
-        </a>
-        <a data-official-link="github-repo" href="https://github.com" target="_blank" rel="noopener noreferrer" class="h-9 px-3.5 rounded-[8px] bg-[#161B22] hover:bg-[#1C222B] text-[#E6EDF3] border border-[#263040] text-xs sm:text-[13px] font-medium inline-flex items-center gap-1.5 transition">
-          <span>GitHub</span>
-        </a>
-        <a data-official-link="github-release" href="https://github.com" target="_blank" rel="noopener noreferrer" class="h-9 px-4 rounded-[8px] bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-xs sm:text-[13px] font-semibold inline-flex items-center gap-1.5 transition">
-          <span>Скачать для Windows (.exe)</span>
-        </a>
-      </div>
-    </section>
-    <section id="catalog" class="space-y-3.5">
-      <div class="flex flex-col md:flex-row md:items-center justify-between gap-3">
-        <div id="genreChipsContainer" class="flex items-center gap-1.5 overflow-x-auto pb-1 md:pb-0"></div>
-        <div class="flex flex-wrap items-center justify-between md:justify-end gap-2.5 shrink-0">
-          <span id="catalogCountLabel" class="text-xs text-[#7D8590]">Загрузка игр...</span>
-          <button type="button" onclick="shuffleAndReloadCatalog()" class="h-8 px-2.5 rounded-[8px] bg-[#161B22] hover:bg-[#1C222B] text-[#60A5FA] border border-[#263040] text-xs font-medium cursor-pointer transition">
-            Обновить подборку
-          </button>
-          <div class="flex items-center gap-2">
-            <label for="sortSelect" class="text-xs text-[#8B949E]">Сортировка:</label>
-            <select id="sortSelect" onchange="renderCatalogGrid()" class="h-8 px-2.5 rounded-[8px] bg-[#12161D] text-xs text-[#E6EDF3] border border-[#1E242E] focus:outline-none focus:border-[#3B82F6] cursor-pointer">
-              <option value="online">По онлайну</option>
-              <option value="rating">По рейтингу</option>
-              <option value="name">По названию</option>
-            </select>
-          </div>
-        </div>
-      </div>
-
-      <div id="gamesGrid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-3.5"></div>
-
-      <div id="catalogEmptyState" class="hidden surface-card p-8 text-center space-y-2.5">
-        <div class="text-sm font-semibold text-[#E6EDF3]">По вашему запросу игр не найдено</div>
-        <div class="text-xs text-[#8B949E]">Проверьте название, вставьте точный Place ID (например, 2753915549) или сбросьте фильтры.</div>
-        <div class="pt-1">
-          <button type="button" onclick="resetAllFilters()" class="h-8 px-3.5 rounded-[8px] bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-xs font-semibold transition cursor-pointer">Сбросить фильтры</button>
-        </div>
-      </div>
-    </section>
-
-    <section id="features" class="pt-2 space-y-3">
-      <div class="flex items-baseline justify-between">
-        <h2 class="text-sm sm:text-base font-bold text-[#E6EDF3] tracking-tight">Модули RBX Client 1.4.5</h2>
-        <span class="text-xs text-[#7D8590]">Прямой запуск плейсов, кастомные шейдеры и защита</span>
-      </div>
-
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-        <article class="surface-card p-4 space-y-1.5">
-          <div class="flex items-center justify-between">
-            <h3 class="text-[13px] font-semibold text-[#E6EDF3]">FastFlags, FPS Unlocker и Шейдеры</h3>
-            <span class="text-[11px] font-mono text-[#60A5FA]">ClientAppSettings</span>
-          </div>
-          <p class="text-xs text-[#8B949E] leading-relaxed">Лимит FPS (30–360), выбор рендера DirectX 11/10, Vulkan или OpenGL, установка кастомных шейдеров с авто-бэкапом и очистка кэша шейдеров.</p>
-        </article>
-
-        <article class="surface-card p-4 space-y-1.5">
-          <div class="flex items-center justify-between">
-            <h3 class="text-[13px] font-semibold text-[#E6EDF3]">Server Hopper и VIP-ссылки</h3>
-            <span class="text-[11px] font-mono text-[#60A5FA]">Direct Join</span>
-          </div>
-          <p class="text-xs text-[#8B949E] leading-relaxed">Публичные серверы по регионам и пингу, вход на самый пустой сервер, кнопка Rejoin, поддержка VIP-ссылок (privateServerLinkCode) и авто-F11.</p>
-        </article>
-
-        <article class="surface-card p-4 space-y-1.5">
-          <div class="flex items-center justify-between">
-            <h3 class="text-[13px] font-semibold text-[#E6EDF3]">Профиль, друзья и трекер времени</h3>
-            <span class="text-[11px] font-mono text-[#60A5FA]">Public API</span>
-          </div>
-          <p class="text-xs text-[#8B949E] leading-relaxed">Автоопределение аккаунта Roblox, точный возраст профиля, список всех друзей с аватарками, история недавних игр и учёт времени в каждом плейсе.</p>
-        </article>
-
-        <article class="surface-card p-4 space-y-1.5">
-          <div class="flex items-center justify-between">
-            <h3 class="text-[13px] font-semibold text-[#E6EDF3]">Безлимитный RBX AI (ChatGPT)</h3>
-            <span class="text-[11px] font-mono text-[#60A5FA]">OpenAI Engine</span>
-          </div>
-          <p class="text-xs text-[#8B949E] leading-relaxed">Встроенный помощник на базе ChatGPT без API-ключей: прикрепление скриншотов и файлов, разбор ошибок запуска и настройка графики.</p>
-        </article>
-
-        <article class="surface-card p-4 space-y-1.5">
-          <div class="flex items-center justify-between">
-            <h3 class="text-[13px] font-semibold text-[#E6EDF3]">Встроенный защитник RBX Shield</h3>
-            <span class="text-[11px] font-mono text-[#60A5FA]">Anti-DDoS &amp; Guard</span>
-          </div>
-          <p class="text-xs text-[#8B949E] leading-relaxed">Проверка целостности SHA-256 файлов, защита hosts от подмены доменов, Anti-DDoS фильтр запросов и сканер отладчиков/инжекторов в памяти.</p>
-        </article>
-
-        <article class="surface-card p-4 space-y-1.5">
-          <div class="flex items-center justify-between">
-            <h3 class="text-[13px] font-semibold text-[#E6EDF3]">Self-Heal и автообновление</h3>
-            <span class="text-[11px] font-mono text-[#60A5FA]">rbxclient://</span>
-          </div>
-          <p class="text-xs text-[#8B949E] leading-relaxed">Автовосстановление повреждённых JSON-конфигов с бэкапами .bak, регистрация протокола rbxclient:// и обновление клиента в один клик с GitHub.</p>
-        </article>
-      </div>
-    </section>
-    <section id="security" class="surface-card p-4 sm:p-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
-      <div class="space-y-1.5 max-w-4xl">
-        <div class="flex flex-wrap items-center gap-2">
-          <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
-          <h2 class="text-sm font-bold text-[#E6EDF3]">Безопасность, Anti-DDoS защита и официальное авторство</h2>
-        </div>
-        <p class="text-xs sm:text-[13px] text-[#8B949E] leading-relaxed">
-          Официальным и единственным разработчиком и издателем <strong class="text-[#E6EDF3]">RBX Client</strong> является <strong class="text-[#E6EDF3]">Kilon</strong>.
-          Исходный код, релизы и обновления публикуются исключительно в официальном репозитории
-          <a data-official-link="github-repo" href="https://github.com" target="_blank" rel="noopener noreferrer" class="text-[#60A5FA] hover:underline font-medium">://github.com</a>
-          и Telegram-канале
-          <a data-official-link="telegram" href="https://t.me" target="_blank" rel="noopener noreferrer" class="text-[#60A5FA] hover:underline font-medium">@RobloxLauncher</a>.
-          Лаунчер и сайт защищены модулем <strong class="text-[#E6EDF3]">RBX Shield</strong> и никогда не считывают <code class="text-[#93C5FD]">.ROBLOSECURITY</code> cookie.
-        </p>
-      </div>
-
-      <a data-official-link="github-repo" href="https://github.com" target="_blank" rel="noopener noreferrer" class="h-9 px-3.5 rounded-[8px] bg-[#161B22] hover:bg-[#1C222B] text-[#E6EDF3] border border-[#263040] text-xs font-semibold inline-flex items-center justify-center shrink-0 transition">
-        Открыть репозиторий GitHub
-      </a>
-    </section>
-  </main>
-
-  <footer class="border-t border-[#1E242E] mt-8">
-    <div class="max-w-[1360px] mx-auto px-3 sm:px-6 py-6 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-[#7D8590]">
-      <div class="space-y-1">
-        <div class="text-[#E6EDF3] font-medium">© 2026 RBX Client • Разработчик: Kilon • Защищено RBX Web Shield</div>
-        <div>RBX Client не аффилирован с Roblox Corporation. Все названия игр и товарные знаки принадлежат их правообладателям.</div>
-      </div>
-      <div class="flex items-center gap-4 shrink-0">
-        <a data-official-link="telegram" href="https://t.me" target="_blank" rel="noopener noreferrer" class="text-[#8B949E] hover:text-[#E6EDF3] transition">Telegram</a>
-        <a data-official-link="github-repo" href="https://github.com" target="_blank" rel="noopener noreferrer" class="text-[#8B949E] hover:text-[#E6EDF3] transition">GitHub</a>
-        <a data-official-link="github-release" href="https://github.com/releases/latest" target="_blank" rel="noopener noreferrer" class="text-[#60A5FA] hover:underline transition">Релиз v1.4.5 (.exe)</a>
+<header class="sticky top-0 z-40 border-b" style="background:#0B0E11ee;backdrop-filter:blur(10px);border-color:var(--bd);padding-top:env(safe-area-inset-top,0)">
+  <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center gap-x-4 gap-y-2">
+    <a href="#top" class="flex items-center gap-2.5 shrink-0">
+      <span class="w-9 h-9 rounded-lg grid place-items-center font-extrabold text-sm text-white" style="background:linear-gradient(135deg,#2563EB,#1e3a8a)">RX</span>
+      <span class="font-bold">RBX Client</span>
+      <span class="text-[11px] font-semibold px-2 py-0.5 rounded-full" style="background:#2563EB22;color:#7aa2ff;border:1px solid #2563EB55">1.4.5</span>
+    </a>
+    <nav class="hidden lg:flex items-center gap-5 text-sm" style="color:var(--mu)">
+      <a class="hover:text-white" href="#catalog">Каталог</a>
+      <a class="hover:text-white" href="#modules">Модули</a>
+      <a class="hover:text-white" href="#shield">RBX Shield</a>
+    </nav>
+    <div class="order-3 md:order-none flex-1 min-w-[220px] relative">
+      <div class="flex items-center gap-2 card px-3 py-2" style="border-radius:10px">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8B95A5" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <input id="q" type="text" autocomplete="off" placeholder="Название игры или Place ID…" class="bg-transparent flex-1 text-sm min-w-0" aria-label="Поиск игры">
+        <button id="qx" class="hidden text-sm px-1" style="color:var(--mu)" aria-label="Очистить">✕</button>
+        <span class="kbd hidden sm:inline">Ctrl+K</span>
       </div>
     </div>
-  </footer>
+    <a data-lock="dl" href="https://github.com/debliksmen-lab/RBX-Client/releases/latest" target="_blank" rel="noopener noreferrer" class="btn btn-p ml-auto md:ml-0">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 3v12m0 0-4-4m4 4 4-4M4 20h16"/></svg>
+      <span>Скачать для Windows (.exe)</span>
+    </a>
+  </div>
+</header>
 
-  <div id="gameModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" class="fixed inset-0 z-50 hidden items-center justify-center p-3 sm:p-4 bg-black/75 backdrop-blur-xs" onclick="onModalOverlayClick(event)">
-    <div class="modal-panel w-full max-w-xl surface-card overflow-hidden shadow-2xl">
-      <div class="p-4 sm:p-5 border-b border-[#1E242E] flex items-start gap-4">
-        <div class="game-thumb-wrap w-24 h-24 sm:w-28 sm:h-28 rounded-[10px] border border-[#1E242E] shrink-0">
-          <div id="modalThumbSkeleton" class="game-thumb-skeleton"></div>
-          <img id="modalThumbImg" alt="" class="game-thumb-img absolute inset-0" />
-        </div>
-        <div class="flex-1 min-w-0">
-          <div class="flex items-start justify-between gap-2">
-            <div>
-              <span id="modalGenre" class="inline-block px-2 py-0.5 text-[11px] font-medium rounded-[5px] bg-[#161B22] text-[#93C5FD] border border-[#263040] mb-1.5">Жанр</span>
-              <h3 id="modalTitle" class="text-lg sm:text-xl font-bold text-[#E6EDF3] leading-snug">Название игры</h3>
-              <p id="modalCreator" class="text-xs text-[#8B949E] mt-0.5">Создатель</p>
-            </div>
-            <button type="button" onclick="closeGameModal()" aria-label="Закрыть" class="w-8 h-8 rounded-[8px] bg-[#161B22] hover:bg-[#1E242E] text-[#8B949E] hover:text-white border border-[#263040] flex items-center justify-center text-xs shrink-0 cursor-pointer transition">✕</button>
-          </div>
-          <div class="flex flex-wrap items-center gap-3 mt-3 text-xs">
-            <span class="inline-flex items-center gap-1.5 font-semibold text-emerald-400">
-              <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
-              <span id="modalOnline">0</span>
-            </span>
-            <span class="text-[#334155]">•</span>
-            <span id="modalRating" class="font-semibold text-[#E6EDF3]">Лайки: 90%</span>
-            <span class="text-[#334155]">•</span>
-            <span class="inline-flex items-center gap-1.5 text-[#8B949E]">
-              <span>Place ID:</span>
-              <code id="modalPlaceId" class="text-[#93C5FD] font-mono">0</code>
-              <button type="button" onclick="copyCurrentPlaceId()" class="px-1.5 py-0.5 text-[11px] font-medium rounded bg-[#161B22] hover:bg-[#1E242E] text-[#E6EDF3] border border-[#263040] cursor-pointer transition">Копировать</button>
-            </span>
-          </div>
-        </div>
-      </div>
-      <div class="p-4 sm:p-5 space-y-4">
-        <p id="modalDescription" class="text-xs sm:text-[13px] text-[#8B949E] leading-relaxed"></p>
-        <div class="flex flex-col sm:flex-row gap-2.5">
-          <button type="button" onclick="launchViaRbxClient()" class="flex-1 h-10 px-4 rounded-[8px] bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-xs sm:text-[13px] font-semibold inline-flex items-center justify-center gap-2 transition cursor-pointer">
-            <span>Запустить через RBX Client</span>
-          </button>
-          <button type="button" onclick="openInRobloxBrowser()" class="flex-1 h-10 px-4 rounded-[8px] bg-[#161B22] hover:bg-[#1C222B] text-[#E6EDF3] border border-[#263040] text-xs sm:text-[13px] font-semibold inline-flex items-center justify-center gap-2 transition cursor-pointer">
-            <span>Открыть в браузере Roblox</span>
-          </button>
-        </div>
-      </div>
+<main id="top" class="max-w-7xl mx-auto px-4">
+
+<section class="card mt-6 p-6 md:p-10 relative overflow-hidden">
+  <div class="absolute -top-24 -right-24 w-80 h-80 rounded-full opacity-30" style="background:radial-gradient(#2563EB,transparent 70%)"></div>
+  <div class="relative">
+    <div class="flex flex-wrap items-center gap-2 mb-4">
+      <span class="text-xs font-semibold px-2.5 py-1 rounded-full" style="background:#2563EB22;color:#7aa2ff;border:1px solid #2563EB55">Windows 10/11</span>
+      <span class="text-xs font-semibold px-2.5 py-1 rounded-full flex items-center gap-2" style="background:#22c55e18;color:#4ade80;border:1px solid #22c55e44"><span class="dot"></span>RBX Web Shield: Active</span>
+    </div>
+    <h1 class="text-3xl md:text-5xl font-extrabold tracking-tight">RBX Client <span style="color:#3b82f6">1.4.5</span></h1>
+    <p class="mt-2 text-sm" style="color:var(--mu)">Автор и издатель: <b class="text-white">Kilon</b></p>
+    <p class="mt-5 max-w-3xl leading-relaxed" style="color:#b6beca">Лёгкий лаунчер Roblox для Windows: запускайте игры и VIP-серверы через протокол <code class="px-1.5 py-0.5 rounded" style="background:#1E242E">rbxclient://</code>, настраивайте FastFlags и FPS Unlocker, подключайте кастомные шейдеры, меняйте сервер через Server Hopper, мгновенно делайте Rejoin, общайтесь с ChatGPT AI прямо в клиенте и оставайтесь под защитой RBX Shield.</p>
+    <div class="mt-7 flex flex-wrap gap-3">
+      <a data-lock="dl" href="https://github.com/debliksmen-lab/RBX-Client/releases/latest" target="_blank" rel="noopener noreferrer" class="btn btn-p">⬇ Скачать (.exe)</a>
+      <a data-lock="tg" href="https://t.me/RobloxLauncher" target="_blank" rel="noopener noreferrer" class="btn">✈ Telegram (@RobloxLauncher)</a>
+      <a data-lock="gh" href="https://github.com/debliksmen-lab/RBX-Client" target="_blank" rel="noopener noreferrer" class="btn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.87-1.37-3.87-1.37-.52-1.33-1.28-1.69-1.28-1.69-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.28 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.78 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.83 1.19 3.09 0 4.42-2.7 5.4-5.27 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg>GitHub</a>
     </div>
   </div>
+</section>
 
-  <div id="ddosChallengeModal" role="dialog" aria-modal="true" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/85 backdrop-blur-sm">
-    <div class="w-full max-w-md surface-card p-5 space-y-3 border border-amber-500/40 shadow-2xl">
-      <div class="flex items-center gap-2 text-amber-400 font-bold text-sm">
-        <span>🛡️ RBX Web Shield — Проверка активности</span>
-      </div>
-      <p class="text-xs text-[#8B949E] leading-relaxed">
-        Обнаружена слишком высокая частота запросов или автоматизированная активность (защита от DDoS-флуда). Подождите 3 секунды и подтвердите, что вы человек.
-      </p>
-      <button id="ddosVerifyBtn" type="button" onclick="resolveDdosChallenge()" class="w-full h-9 rounded-[8px] bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-xs font-semibold transition cursor-pointer">
-        Подтвердить и продолжить
-      </button>
+<section id="catalog" class="mt-12">
+  <div class="flex flex-wrap items-end justify-between gap-3">
+    <div>
+      <h2 class="text-2xl font-bold">Живой каталог игр Roblox</h2>
+      <p class="text-sm mt-1" style="color:var(--mu)">Только игры от 10+ игроков онлайн · онлайн обновляется каждые 20 секунд · <span id="cnt">0</span> игр</p>
+    </div>
+    <div class="flex items-center gap-2">
+      <select id="sort" class="btn" style="padding-right:.5rem" aria-label="Сортировка">
+        <option value="on">По онлайну</option><option value="rt">По рейтингу</option><option value="nm">По названию</option>
+      </select>
+      <button id="refresh" class="btn btn-p">↻ Обновить подборку</button>
     </div>
   </div>
+  <div id="chips" class="flex flex-wrap gap-2 mt-5"></div>
+  <div id="grid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4 mt-5"></div>
+  <p id="empty" class="hidden text-center py-12" style="color:var(--mu)">Ничего не найдено. Попробуйте другой запрос или введите Place ID.</p>
+</section>
 
-  <div id="bottomNotice" class="fixed bottom-4 right-4 left-4 sm:left-auto z-50 hidden max-w-md rounded-[10px] bg-[#12161D] border border-[#2D3646] p-3.5 shadow-2xl">
-    <div class="flex items-start justify-between gap-3">
-      <div class="space-y-1.5">
-        <p id="bottomNoticeText" class="text-xs sm:text-[13px] font-medium text-[#E6EDF3] leading-snug"></p>
-        <div id="bottomNoticeActionRow" class="hidden pt-0.5">
-          <a data-official-link="github-release" href="https://github.com/releases/latest" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-[6px] bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-xs font-semibold transition">
-            <span>Скачать RBX Client (.exe) с GitHub Releases</span>
-          </a>
-        </div>
-      </div>
-      <button type="button" onclick="hideBottomNotice()" aria-label="Закрыть уведомление" class="text-xs text-[#8B949E] hover:text-white cursor-pointer shrink-0">✕</button>
+<section id="modules" class="mt-16">
+  <h2 class="text-2xl font-bold">Модули RBX Client 1.4.5</h2>
+  <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4 mt-5">
+    <div class="card p-5"><div class="text-2xl">⚡</div><h3 class="font-semibold mt-3">FastFlags, FPS Unlocker и шейдеры</h3><p class="text-sm mt-1.5" style="color:var(--mu)">Снимите ограничение кадров, тонко настройте FastFlags и подключайте кастомные шейдеры в пару кликов.</p></div>
+    <div class="card p-5"><div class="text-2xl">🔀</div><h3 class="font-semibold mt-3">Server Hopper и VIP-ссылки</h3><p class="text-sm mt-1.5" style="color:var(--mu)">Быстрая смена сервера, мгновенный Rejoin и запуск приватных серверов по VIP-ссылке.</p></div>
+    <div class="card p-5"><div class="text-2xl">👤</div><h3 class="font-semibold mt-3">Профиль, друзья и трекер времени</h3><p class="text-sm mt-1.5" style="color:var(--mu)">Ваш профиль, список друзей и статистика времени, проведённого в играх, в одном окне.</p></div>
+    <div class="card p-5"><div class="text-2xl">🤖</div><h3 class="font-semibold mt-3">Безлимитный RBX AI (ChatGPT)</h3><p class="text-sm mt-1.5" style="color:var(--mu)">Встроенный ИИ-помощник: подсказки по играм, скриптам и настройкам без ограничений.</p></div>
+    <div class="card p-5"><div class="text-2xl">🛡️</div><h3 class="font-semibold mt-3">Встроенный защитник RBX Shield</h3><p class="text-sm mt-1.5" style="color:var(--mu)">Контроль целостности файлов и защита от подмены компонентов лаунчера.</p></div>
+    <div class="card p-5"><div class="text-2xl">🩹</div><h3 class="font-semibold mt-3">Self-Heal и автообновление</h3><p class="text-sm mt-1.5" style="color:var(--mu)">Лаунчер сам восстанавливает повреждённые файлы и обновляется до последней версии.</p></div>
+  </div>
+</section>
+
+<section id="shield" class="mt-16 mb-16">
+  <div class="card p-6 md:p-8">
+    <h2 class="text-2xl font-bold">Безопасность и RBX Shield</h2>
+    <div class="grid md:grid-cols-3 gap-5 mt-5 text-sm" style="color:#b6beca">
+      <div><b class="text-white block mb-1">Официальный издатель</b>Единственный официальный издатель и автор RBX Client — Kilon. Скачивайте только по ссылкам с этой страницы.</div>
+      <div><b class="text-white block mb-1">Защита от подмены файлов</b>RBX Shield проверяет целостность компонентов и автоматически восстанавливает изменённые файлы.</div>
+      <div><b class="text-white block mb-1">Без доступа к аккаунту</b>RBX Client не читает и не передаёт cookie <code class="px-1 rounded" style="background:#1E242E">.ROBLOSECURITY</code>.</div>
     </div>
   </div>
+</section>
+</main>
 
-  <textarea id="clipboardHelper" class="sr-only" aria-hidden="true"></textarea>
-  <script>
-    const RBXWebShield = (() => {
-      const OFFICIAL_URLS = Object.freeze({
-        "github-release": "https://github.com",
-        "github-repo": "https://github.com",
-        "telegram": "https://t.me",
-      });
-      const ALLOWED_HOSTS = new Set([
-        "github.com", "://roblox.com", "roblox.com", "t.me",
-        "://roproxy.com", "://roproxy.com", "://roproxy.com", "://rbxcdn.com",
-      ]);
-      const actionTimestamps = [];
-      let isChallenged = false;
+<footer class="border-t" style="border-color:var(--bd)">
+  <div class="max-w-7xl mx-auto px-4 py-8 flex flex-wrap items-center justify-between gap-4 text-sm" style="color:var(--mu)">
+    <div>© 2026 RBX Client 1.4.5 · Автор и издатель Kilon · Не связан с Roblox Corporation.</div>
+    <div class="flex gap-4"><a data-lock="gh" href="https://github.com/debliksmen-lab/RBX-Client" target="_blank" rel="noopener noreferrer" class="hover:text-white">GitHub</a><a data-lock="tg" href="https://t.me/RobloxLauncher" target="_blank" rel="noopener noreferrer" class="hover:text-white">Telegram</a><a data-lock="dl" href="https://github.com/debliksmen-lab/RBX-Client/releases/latest" target="_blank" rel="noopener noreferrer" class="hover:text-white">Скачать</a></div>
+  </div>
+</footer>
 
-      function checkRateLimit() {
-        if (isChallenged) return false;
-        const now = Date.now();
-        while (actionTimestamps.length > 0 && now - actionTimestamps > 5000) actionTimestamps.shift();
-        actionTimestamps.push(now);
-        if (actionTimestamps.length > 20) {
-          isChallenged = true;
-          const modal = document.getElementById("ddosChallengeModal");
-          if (modal) { modal.classList.remove("hidden"); modal.classList.add("flex"); }
-          return false;
-        }
-        return true;
-      }
+<div id="modal" class="hidden fixed inset-0 z-50 items-center justify-center p-4" role="dialog" aria-modal="true">
+  <div class="card w-full max-w-md overflow-hidden max-h-[92vh] overflow-y-auto" id="mbox"></div>
+</div>
+<div id="toasts" class="fixed z-[60] right-4 flex flex-col gap-2 items-end" style="bottom:calc(1rem + env(safe-area-inset-bottom,0px))"></div>
 
-      function resolveChallenge() {
-        actionTimestamps.length = 0;
-        isChallenged = false;
-        const modal = document.getElementById("ddosChallengeModal");
-        if (modal) { modal.classList.add("hidden"); modal.classList.remove("flex"); }
-      }
+<script>
+/* ===== RBX Web Shield ===== */
+(function(){
+  // 1. Anti-Clickjacking
+  try{ if(window.top!==window.self){ window.top.location=window.self.location; } else { document.getElementById('ab').remove(); } }
+  catch(e){ document.documentElement.innerHTML=''; }
+  // 2. Защита официальных ссылок
+  const L=Object.freeze({dl:'https://github.com/debliksmen-lab/RBX-Client/releases/latest',tg:'https://t.me/RobloxLauncher',gh:'https://github.com/debliksmen-lab/RBX-Client'});
+  function lock(){document.querySelectorAll('a[data-lock]').forEach(a=>{const u=L[a.dataset.lock];if(a.getAttribute('href')!==u)a.setAttribute('href',u);if(a.target!=='_blank')a.target='_blank';a.rel='noopener noreferrer';});}
+  lock(); setInterval(lock,2000);
+  new MutationObserver(lock).observe(document.documentElement,{subtree:true,attributes:true,attributeFilter:['href','target','rel']});
+  window.__L=L;
+  // 4. Мягкий анти-флуд: >25 кликов за 5 секунд
+  let ck=[],blocked=0;
+  document.addEventListener('click',e=>{
+    const n=Date.now();
+    if(n<blocked){e.stopPropagation();e.preventDefault();return;}
+    ck=ck.filter(t=>n-t<5000);ck.push(n);
+    if(ck.length>25){blocked=n+5000;ck=[];e.stopPropagation();e.preventDefault();window.__toast&&window.__toast('RBX Web Shield: слишком много действий. Подождите 5 секунд.');}
+  },true);
+})();
 
-      function sanitizeText(str) {
-        return String(str ?? "")
-          .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
-          .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
-      }
+/* ===== Утилиты ===== */
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"'`\/]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;','`':'&#96;','/':'&#47;'}[c]));
+const fmt=n=>Number(n||0).toLocaleString('ru-RU');
+function toast(t,btn){
+  const d=document.createElement('div');d.className='card px-4 py-3 text-sm flex items-center gap-3 shadow-2xl';d.style.maxWidth='340px';
+  const s=document.createElement('span');s.textContent=t;d.appendChild(s);
+  if(btn){const a=document.createElement('a');a.href=window.__L.dl;a.target='_blank';a.rel='noopener noreferrer';a.dataset.lock='dl';a.className='btn btn-p';a.style.padding='.35rem .7rem';a.textContent='Скачать лаунчер';d.appendChild(a);}
+  $('#toasts').appendChild(d);setTimeout(()=>d.remove(),btn?9000:3500);
+}
+window.__toast=toast;
+const R='https://';
+async function j(u){const r=await fetch(u);if(!r.ok)throw new Error(r.status);return r.json();}
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+const shuf=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const k=Math.floor(Math.random()*(i+1));[a[i],a[k]]=[a[k],a[i]];}return a;};
 
-      function enforceOfficialLinks() {
-        document.querySelectorAll("a[data-official-link]").forEach((a) => {
-          const expected = OFFICIAL_URLS[a.getAttribute("data-official-link")];
-          if (expected && a.href !== expected) a.href = expected;
-          a.setAttribute("rel", "noopener noreferrer");
-        });
-      }
+/* ===== Данные ===== */
+const GEN=[['all','Все'],['rp','РП / Город'],['act','Экшен'],['hor','Хоррор'],['sim','Симуляторы'],['sur','Выживание'],['sho','Шутеры']];
+const GQ={rp:['roleplay','city rp','town life','brookhaven','school rp'],act:['action','fighting','anime battle','obby','blade'],hor:['horror','scary','creepy','survive monster'],sim:['simulator','tycoon','pet simulator','clicker'],sur:['survival','craft','forest','disaster survival'],sho:['shooter','fps','gun','battle royale']};
+const SEEDS=[[4924922222,'rp'],[15101393044,'rp'],[920587237,'sim'],[8737899170,'sim'],[6284583030,'sim'],[3101667897,'sim'],[2753915549,'act'],[1962086868,'act'],[606849621,'act'],[2788229376,'act'],[13772394625,'act'],[4520749081,'act'],[6516141723,'hor'],[142823291,'hor'],[9872472334,'hor'],[189707,'sur'],[4111023553,'sur'],[70876832253,'sur'],[286090429,'sho'],[292439477,'sho'],[17625359962,'sho'],[2377868063,'sho']];
+const G=new Map();
+let genre='all',sortBy='on',query='';
 
-      function isUrlSafe(rawUrl) {
-        if (!rawUrl) return false;
-        if (rawUrl.startsWith("#") || rawUrl.startsWith("rbxclient://")) return true;
-        try {
-          const parsed = new URL(rawUrl, window.location.origin);
-          if (parsed.origin === window.location.origin) return true;
-          return parsed.protocol === "https:" && ALLOWED_HOSTS.has(parsed.hostname.toLowerCase());
-        } catch (_e) { return false; }
-      }
+function guess(n){n=(n||'').toLowerCase();
+  if(/horror|scary|doors|evade|monster|backroom|nightmare|хоррор/.test(n))return'hor';
+  if(/rp|roleplay|city|brookhaven|town|school|life|рп/.test(n))return'rp';
+  if(/simulator|tycoon|clicker|pet|adopt|симулятор/.test(n))return'sim';
+  if(/surviv|craft|forest|disaster|выжив/.test(n))return'sur';
+  if(/shoot|fps|gun|arsenal|rivals|war|battle|strike|phantom/.test(n))return'sho';
+  return'act';}
 
-      document.addEventListener("click", (ev) => {
-        if (!checkRateLimit()) { ev.preventDefault(); ev.stopPropagation(); return; }
-        const link = ev.target && ev.target.closest ? ev.target.closest("a[href]") : null;
-        if (link && !isUrlSafe(link.getAttribute("href") || "")) {
-          ev.preventDefault();
-          showBottomNotice("RBX Web Shield: переход по недоверенной ссылке заблокирован.", false);
-        }
-      }, true);
-
-      new MutationObserver(() => enforceOfficialLinks()).observe(document.documentElement, { childList: true, subtree: true, attributes: true, attributeFilter: ["href"] });
-      enforceOfficialLinks();
-      return Object.freeze({ checkRateLimit, resolveChallenge, sanitizeText, isUrlSafe });
-    })();
-
-    function resolveDdosChallenge() { RBXWebShield.resolveChallenge(); }
-
-    const ICON_CACHE_KEY = "rbx_client_roproxy_icons_v4";
-    const ICON_CACHE_TTL_MS = 24 * 60 * 60 * 1000;
-    const GENRE_LIST = ["Все", "РП / Город", "Экшен", "Хоррор", "Симуляторы", "Выживание", "Шутеры"];
-
-    const GAMES_CATALOG = [
-      { placeId: 2753915549, universeId: 994732206, name: "Blox Fruits", creator: "Gamer Robot Inc", genre: "Экшен", playing: 428500, rating: 94, image: "", description: "Приключенческая экшен-RPG с исследованием островов, поиском редких фруктов, прокачкой боевых стилей и морскими сражениями." },
-      { placeId: 4924922222, universeId: 1686885941, name: "Brookhaven RP", creator: "Wolfpaq", genre: "РП / Город", playing: 382400, rating: 89, image: "", description: "Ролевой город с выбором домов, транспорта, профессий и совместных сценариев для игры в компании." },
-      { placeId: 920587237, universeId: 383310974, name: "Adopt Me!", creator: "Uplift Games", genre: "РП / Город", playing: 214600, rating: 91, image: "", description: "Коллекционирование питомцев, обустройство собственного дома, сезонные обновления и система обмена между игроками." },
-      { placeId: 10449761463, universeId: 3808081382, name: "The Strongest Battlegrounds", creator: "Yielding Arts", genre: "Экшен", playing: 168200, rating: 93, image: "", description: "Динамичная боевая арена с комбо-атаками, уклонениями, разрушаемым окружением и выбором уникальных бойцов." },
-      { placeId: 16732694052, universeId: 5750914919, name: "Fisch", creator: "Fisching", genre: "Симуляторы", playing: 149300, rating: 95, image: "", description: "Исследовательский симулятор рыбалки с открытым океаном, редкими видами улова, улучшением снастей и сменой погоды." },
-      { placeId: 15101393044, universeId: 5203828273, name: "Dress To Impress", creator: "Dress To Impress Group", genre: "РП / Город", playing: 134700, rating: 92, image: "", description: "Тематические показы мод на время с подбором образов, аксессуаров и голосованием участников на подиуме." },
-      { placeId: 17625359962, universeId: 6035872082, name: "Rivals", creator: "Nosniy Games", genre: "Шутеры", playing: 118400, rating: 94, image: "", description: "Соревновательный дуэльный и командный шутер от первого лица в форматах 1v1–5v5 с быстрыми раундами." },
-      { placeId: 6516141723, universeId: 2440500124, name: "DOORS", creator: "LSPLASH", genre: "Хоррор", playing: 96400, rating: 96, image: "", description: "Атмосферный хоррор с последовательным прохождением комнат отеля, звуковыми подсказками и уникальными сущностями." },
-      { placeId: 142823291, universeId: 66654135, name: "Murder Mystery 2", creator: "Nikilis", genre: "Экшен", playing: 91800, rating: 90, image: "", description: "Раунды на дедукцию и реакцию, где мирные игроки спасаются, шериф ищет нарушителя, а коллекционеры собирают редкие предметы." },
-      { placeId: 9872472334, universeId: 3647333358, name: "Evade", creator: "Hexagon Development Community", genre: "Выживание", playing: 78300, rating: 92, image: "", description: "Скоростное командное выживание с паркуром, подкатами, спасением союзников и динамичными раундами на больших картах." },
-      { placeId: 13772394625, universeId: 4777817887, name: "Blade Ball", creator: "Wiggity.", genre: "Экшен", playing: 64100, rating: 90, image: "", description: "Динамичные матчи на реакцию и тайминг, где игроки отбивают самонаводящийся шар, ускоряющийся с каждым ударом." },
-      { placeId: 8737899170, universeId: 3317771874, name: "Pet Simulator 99", creator: "BIG Games Pets", genre: "Симуляторы", playing: 54200, rating: 86, image: "", description: "Симулятор сбора монет и открытия локаций с отрядом питомцев, улучшениями и регулярными внутриигровыми событиями." },
-      { placeId: 1537690962, universeId: 6011308632, name: "Bee Swarm Simulator", creator: "Onett", genre: "Симуляторы", playing: 43900, rating: 95, image: "", description: "Развитие собственной пасеки: сбор пыльцы на полях, выведение разных видов пчёл, задания медведей и защита улья." },
-      { placeId: 606849621, universeId: 245662005, name: "Jailbreak", creator: "Badimo", genre: "РП / Город", playing: 36700, rating: 90, image: "", description: "Открытый город с ограблениями банков и поездов, погонями на транспорте и противостоянием полиции и преступников." },
-      { placeId: 286090429, universeId: 111958650, name: "Arsenal", creator: "ROLVe Community", genre: "Шутеры", playing: 32500, rating: 92, image: "", description: "Быстрый арена-шутер с автоматической сменой оружия после каждого фрага и компактными картами для динамичных матчей." },
-      { placeId: 6872265039, universeId: 2619619496, name: "BedWars", creator: "Easy.gg", genre: "Экшен", playing: 28900, rating: 87, image: "", description: "Командные бои на островах: защита своей кровати, сбор ресурсов на генераторах, покупка снаряжения и штурм баз соперников." },
-      { placeId: 1962086868, universeId: 73885730, name: "Tower of Hell", creator: "YXCeption", genre: "Экшен", playing: 27400, rating: 88, image: "", description: "Вертикальные полосы препятствий без контрольных точек с меняющимися секциями и модификаторами скорости и гравитации." },
-      { placeId: 189707, universeId: 65033, name: "Natural Disaster Survival", creator: "Stickmasterluke", genre: "Выживание", playing: 24800, rating: 91, image: "", description: "Классическое выживание на разнообразных постройках во время землетрясений, ураганов, наводнений и метеоритных дождей." },
-      { placeId: 292439477, universeId: 115797356, name: "Phantom Forces", creator: "StyLiS Studios", genre: "Шутеры", playing: 21300, rating: 93, image: "", description: "Тактический шутер от первого лица с баллистикой, глубокой кастомизацией модулей оружия и командными режимами." },
-      { placeId: 4623386862, universeId: 1581054212, name: "Piggy", creator: "MiniToon", genre: "Хоррор", playing: 16400, rating: 89, image: "", description: "Сюжетный хоррор-побег с поиском ключей, открытием проходов на локации и командным взаимодействием." }
-    ];
-    let selectedGenre = "Все";
-    let searchQuery = "";
-    let activeModalGame = null;
-    let iconMap = {};
-    let noticeTimeout = null;
-    let lastStatsFetchAt = 0;
-
-    function formatCompactNumber(val) {
-      const n = Number(val || 0);
-      if (n >= 1000000) return (n / 1000000).toFixed(1).replace(/\.0$/, "") + "M";
-      if (n >= 1000) return (n / 1000).toFixed(1).replace(/\.0$/, "") + "K";
-      return String(n);
-    }
-
-    function buildSvgPosterFallback(game) {
-      const title = RBXWebShield.sanitizeText((game && game.name) || "Roblox Game");
-      const genre = RBXWebShield.sanitizeText((game && game.genre) || "Roblox");
-      const pid = RBXWebShield.sanitizeText((game && game.placeId) || "");
-      const svg = `<svg xmlns="http://w3.org" width="512" height="512" viewBox="0 0 512 512"><defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#141B26"/><stop offset="100%" stop-color="#0D1117"/></linearGradient></defs><rect width="512" height="512" fill="url(#bg)"/><rect x="28" y="28" width="456" height="456" rx="24" fill="none" stroke="#222C3A" stroke-width="2"/><rect x="44" y="44" width="132" height="30" rx="8" fill="#1C2533"/><text x="110" y="64" fill="#93C5FD" font-family="Inter,Segoe UI,sans-serif" font-size="14" font-weight="600" text-anchor="middle">${genre}</text><text x="44" y="395" fill="#E6EDF3" font-family="Inter,Segoe UI,sans-serif" font-size="30" font-weight="700">${title.slice(0, 24)}</text><text x="44" y="432" fill="#7D8590" font-family="monospace" font-size="16">Place ID: ${pid}</text></svg>`;
-      return "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg);
-    }
-
-    function readIconCache() {
-      try {
-        const raw = localStorage.getItem(ICON_CACHE_KEY);
-        if (!raw) return {};
-        const parsed = JSON.parse(raw);
-        if (!parsed || Date.now() - Number(parsed.savedAt || 0) > ICON_CACHE_TTL_MS) {
-          localStorage.removeItem(ICON_CACHE_KEY);
-          return {};
-        }
-        return parsed.urls || {};
-      } catch (_e) { return {}; }
-    }
-
-    function writeIconCache(urlsObj) {
-      try { localStorage.setItem(ICON_CACHE_KEY, JSON.stringify({ savedAt: Date.now(), urls: urlsObj })); } catch (_e) {}
-    }
-
-    function attachThumbImageHandlers(imgEl, skeletonEl, game, primaryUrl) {
-      if (!imgEl || !game) return;
-      const fallbackCdnUrl = game.image || "";
-      const svgFallbackUrl = buildSvgPosterFallback(game);
-      imgEl.onload = () => { imgEl.classList.add("is-loaded"); if (skeletonEl) skeletonEl.classList.add("is-hidden"); };
-      imgEl.onerror = () => {
-        const step = Number(imgEl.dataset.fallbackStep || 0);
-        if (step === 0 && fallbackCdnUrl && imgEl.src !== fallbackCdnUrl) { imgEl.dataset.fallbackStep = "1"; imgEl.src = fallbackCdnUrl; }
-        else if (step <= 1 && imgEl.src !== svgFallbackUrl) { imgEl.dataset.fallbackStep = "2"; imgEl.src = svgFallbackUrl; }
-      };
-      const targetSrc = primaryUrl || fallbackCdnUrl || svgFallbackUrl;
-      if (targetSrc && imgEl.dataset.appliedSrc !== targetSrc) {
-        imgEl.dataset.appliedSrc = targetSrc;
-        imgEl.dataset.fallbackStep = primaryUrl ? "0" : "1";
-        imgEl.src = targetSrc;
-      }
-    }
-
-    function applyResolvedIconToDom(placeId, imageUrl) {
-      if (!imageUrl || !RBXWebShield.isUrlSafe(imageUrl)) return;
-      const game = GAMES_CATALOG.find((g) => g.placeId === Number(placeId));
-      document.querySelectorAll(`img[data-place-thumb="${placeId}"]`).forEach((img) => {
-        const wrap = img.closest(".game-thumb-wrap");
-        attachThumbImageHandlers(img, wrap ? wrap.querySelector(".game-thumb-skeleton") : null, game, imageUrl);
-      });
-      if (activeModalGame && activeModalGame.placeId === Number(placeId)) {
-        attachThumbImageHandlers(document.getElementById("modalThumbImg"), document.getElementById("modalThumbSkeleton"), activeModalGame, imageUrl);
-      }
-    }
-
-    async function loadIconsForGames(list) {
-      const ids = list.map((g) => g.placeId).filter((pid) => pid > 0 && !iconMap[String(pid)]).slice(0, 50);
-      if (!ids.length) return;
-      try {
-        const res = await fetch(`https://roproxy.com{ids.join(",")}&returnPolicy=PlaceHolder&size=512x512&format=Png&isCircular=false`);
-        if (!res.ok) return;
-        const data = await res.json();
-        let changed = false;
-        (data.data || []).forEach((item) => {
-          const pid = String(item.targetId || "");
-          const url = String(item.imageUrl || "");
-          if (pid && url && item.state === "Completed" && RBXWebShield.isUrlSafe(url)) {
-            iconMap[pid] = url;
-            const gObj = GAMES_CATALOG.find((g) => String(g.placeId) === pid);
-            if (gObj) gObj.image = url;
-            applyResolvedIconToDom(pid, url);
-            changed = true;
-          }
-        });
-        if (changed) writeIconCache(iconMap);
-      } catch (_e) {}
-    }
-
-    async function fetchAllRobloxGames(query = "") {
-      const cleanQ = String(query || "").trim();
-      try {
-        if (/^\d{4,15}$/.test(cleanQ)) {
-          const r = await fetch(`https://roproxy.com{cleanQ}`);
-          if (r.ok) {
-            const arr = await r.json();
-            if (Array.isArray(arr) && arr && arr.placeId) {
-              const row = arr;
-              if (!GAMES_CATALOG.some((g) => g.placeId === Number(row.placeId))) {
-                GAMES_CATALOG.unshift({
-                  placeId: Number(row.placeId), universeId: Number(row.universeId || 0),
-                  name: row.name || `Place #${row.placeId}`, creator: row.builder || "Roblox",
-                  genre: "Все", playing: Number(row.playing || 10), rating: 90, image: "",
-                  description: row.description || "Режим Roblox из глобального каталога.",
-                });
-              }
-            }
-          }
-        } else {
-          const searchUrl = cleanQ
-            ? `https://roproxy.com{encodeURIComponent(cleanQ)}&sessionId=rbxweb`
-            : `https://roproxy.com`;
-          const res = await fetch(searchUrl);
-          if (res.ok) {
-            const payload = await res.json();
-            const blocks = payload.searchResults || payload.sorts || [];
-            blocks.forEach((blk) => {
-              (blk.contents || blk.games || []).forEach((item) => {
-                const pid = Number(item.rootPlaceId || item.placeId || 0);
-                const uid = Number(item.universeId || item.id || 0);
-                const playing = Number(item.playerCount || item.playing || 0);
-                if (pid > 0 && playing >= 10 && !GAMES_CATALOG.some((g) => g.placeId === pid)) {
-                  GAMES_CATALOG.push({
-                    placeId: pid, universeId: uid, name: item.name || `Place #${pid}`,
-                    creator: item.creatorName || "Roblox", genre: "Все", playing, rating: 90, image: "",
-                    description: "Режим из глобального каталога Roblox (от 10+ игроков онлайн).",
-                  });
-                }
-              });
-            });
-          }
-        }
-        renderCatalogGrid();
-        loadIconsForGames(getFilteredGames());
-      } catch (_e) {}
-    }
-
-    function shuffleAndReloadCatalog() {
-      for (let i = GAMES_CATALOG.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [GAMES_CATALOG[i], GAMES_CATALOG[j]] = [GAMES_CATALOG[j], GAMES_CATALOG[i]];
-      }
-      renderCatalogGrid();
-      fetchAllRobloxGames(searchQuery);
-    }
-    async function refreshLiveOnlineStats() {
-      const now = Date.now();
-      if (now - lastStatsFetchAt < 18000) return;
-      lastStatsFetchAt = now;
-      const uids = GAMES_CATALOG.map((g) => g.universeId).filter(Boolean).slice(0, 50).join(",");
-      if (!uids) return;
-      try {
-        const res = await fetch(`https://roproxy.com{uids}`);
-        if (!res.ok) return;
-        const payload = await res.json();
-        (payload.data || []).forEach((row) => {
-          const gameObj = GAMES_CATALOG.find((g) => g.universeId === Number(row.id || 0));
-          const livePlaying = Number(row.playing || 0);
-          if (gameObj && livePlaying > 0) {
-            gameObj.playing = livePlaying;
-            const el = document.querySelector(`[data-live-playing="${gameObj.placeId}"]`);
-            if (el) el.textContent = formatCompactNumber(livePlaying);
-            if (activeModalGame && activeModalGame.placeId === gameObj.placeId) {
-              document.getElementById("modalOnline").textContent = formatCompactNumber(livePlaying);
-            }
-          }
-        });
-      } catch (_e) {}
-    }
-
-    function renderGenreChips() {
-      const container = document.getElementById("genreChipsContainer");
-      if (!container) return;
-      container.innerHTML = "";
-      GENRE_LIST.forEach((genre) => {
-        const isSelected = selectedGenre === genre;
-        const btn = document.createElement("button");
-        btn.type = "button";
-        btn.textContent = genre;
-        btn.className = isSelected
-          ? "h-8 px-3 rounded-[8px] bg-[#2563EB] text-white text-xs font-semibold whitespace-nowrap cursor-pointer transition"
-          : "h-8 px-3 rounded-[8px] bg-[#12161D] hover:bg-[#161B22] text-[#8B949E] hover:text-[#E6EDF3] border border-[#1E242E] text-xs font-medium whitespace-nowrap cursor-pointer transition";
-        btn.addEventListener("click", () => { selectedGenre = genre; renderGenreChips(); renderCatalogGrid(); });
-        container.appendChild(btn);
-      });
-    }
-
-    function getFilteredGames() {
-      const q = searchQuery.trim().toLowerCase();
-      const sortMode = (document.getElementById("sortSelect") || {}).value || "online";
-      const list = GAMES_CATALOG.filter((g) => {
-        if (Number(g.playing || 0) < 10) return false;
-        if (selectedGenre !== "Все" && g.genre !== selectedGenre) return false;
-        if (!q) return true;
-        return g.name.toLowerCase().includes(q) || g.creator.toLowerCase().includes(q) || String(g.placeId).includes(q);
-      });
-      list.sort((a, b) => sortMode === "rating" ? b.rating - a.rating : (sortMode === "name" ? a.name.localeCompare(b.name, "ru") : b.playing - a.playing));
-      return list;
-    }
-
-    function renderCatalogGrid() {
-      const grid = document.getElementById("gamesGrid");
-      const emptyEl = document.getElementById("catalogEmptyState");
-      const countEl = document.getElementById("catalogCountLabel");
-      if (!grid) return;
-      const filtered = getFilteredGames();
-      if (countEl) countEl.textContent = "Показано " + filtered.length + " игр (все режимы 10+ онлайн)";
-      grid.innerHTML = "";
-      if (!filtered.length) { if (emptyEl) emptyEl.classList.remove("hidden"); return; }
-      if (emptyEl) emptyEl.classList.add("hidden");
-
-      filtered.forEach((game) => {
-        const resolvedUrl = iconMap[String(game.placeId)] || game.image || "";
-        const safeName = RBXWebShield.sanitizeText(game.name);
-        const safeCreator = RBXWebShield.sanitizeText(game.creator);
-        const safeGenre = RBXWebShield.sanitizeText(game.genre);
-        const card = document.createElement("article");
-        card.className = "surface-card surface-card-hover overflow-hidden flex flex-col justify-between cursor-pointer group";
-        card.addEventListener("click", () => openGameModal(game.placeId));
-        card.innerHTML =
-          '<div>' +
-            '<div class="game-thumb-wrap border-b border-[#1E242E]">' +
-              '<div class="game-thumb-skeleton"></div>' +
-              '<img data-place-thumb="' + game.placeId + '" alt="' + safeName + '" class="game-thumb-img absolute inset-0" />' +
-              '<span class="absolute top-2 left-2 z-10 px-1.5 py-0.5 rounded-[5px] bg-[#0B0E11]/85 text-[#8B949E] border border-[#1E242E] text-[10px] font-medium">' + safeGenre + '</span>' +
-            '</div>' +
-            '<div class="p-3 pb-2 space-y-1">' +
-              '<h3 class="text-[13px] sm:text-sm font-semibold text-[#E6EDF3] leading-snug line-clamp-2 min-h-[38px] group-hover:text-white">' + safeName + '</h3>' +
-              '<p class="text-[11px] sm:text-xs text-[#7D8590] truncate">' + safeCreator + '</p>' +
-            '</div>' +
-          '</div>' +
-          '<div class="px-3 pb-3 pt-1 flex items-center justify-between gap-2 text-[11px] sm:text-xs">' +
-            '<span class="inline-flex items-center gap-1.5 font-semibold text-[#E6EDF3]">' +
-              '<span class="w-2 h-2 rounded-full bg-emerald-400 shrink-0"></span>' +
-              '<span data-live-playing="' + game.placeId + '">' + formatCompactNumber(game.playing) + '</span>' +
-            '</span>' +
-            '<span class="text-[#8B949E] font-medium">' + game.rating + '%</span>' +
-          '</div>';
-        grid.appendChild(card);
-        attachThumbImageHandlers(card.querySelector("img"), card.querySelector(".game-thumb-skeleton"), game, resolvedUrl);
-      });
-    }
-
-    let searchDebounce = null;
-    function onSearchQueryChanged(val) {
-      searchQuery = String(val || "").slice(0, 80);
-      const hasText = searchQuery.trim().length > 0;
-      document.getElementById("headerSearchClear")?.classList.toggle("hidden", !hasText);
-      document.getElementById("headerSearchShortcut")?.classList.toggle("hidden", hasText);
-      renderCatalogGrid();
-      clearTimeout(searchDebounce);
-      if (hasText) searchDebounce = setTimeout(() => fetchAllRobloxGames(searchQuery), 350);
-    }
-
-    function clearSearchQuery() {
-      const input = document.getElementById("headerSearchInput");
-      if (input) { input.value = ""; input.focus(); }
-      onSearchQueryChanged("");
-    }
-
-    function resetAllFilters() {
-      selectedGenre = "Все";
-      const sortSel = document.getElementById("sortSelect");
-      if (sortSel) sortSel.value = "online";
-      clearSearchQuery();
-      renderGenreChips();
-      renderCatalogGrid();
-    }
-
-    function openGameModal(placeId) {
-      const game = GAMES_CATALOG.find((g) => g.placeId === Number(placeId));
-      if (!game) return;
-      activeModalGame = game;
-      const thumbImg = document.getElementById("modalThumbImg");
-      const thumbSkeleton = document.getElementById("modalThumbSkeleton");
-      if (thumbSkeleton) thumbSkeleton.classList.remove("is-hidden");
-      if (thumbImg) {
-        thumbImg.classList.remove("is-loaded");
-        thumbImg.dataset.appliedSrc = "";
-        attachThumbImageHandlers(thumbImg, thumbSkeleton, game, iconMap[String(game.placeId)] || game.image || "");
-      }
-      document.getElementById("modalGenre").textContent = game.genre;
-      document.getElementById("modalTitle").textContent = game.name;
-      document.getElementById("modalCreator").textContent = "Создатель: " + game.creator;
-      document.getElementById("modalOnline").textContent = formatCompactNumber(game.playing);
-      document.getElementById("modalRating").textContent = "Лайки: " + game.rating + "%";
-      document.getElementById("modalPlaceId").textContent = String(game.placeId);
-      document.getElementById("modalDescription").textContent = game.description;
-      const modal = document.getElementById("gameModal");
-      modal.classList.remove("hidden");
-      modal.classList.add("flex");
-    }
-
-    function closeGameModal() {
-      const modal = document.getElementById("gameModal");
-      if (modal) { modal.classList.add("hidden"); modal.classList.remove("flex"); }
-      activeModalGame = null;
-    }
-
-    function onModalOverlayClick(e) { if (e.target && e.target.id === "gameModal") closeGameModal(); }
-
-    function showBottomNotice(message, showDownloadBtn = false) {
-      const box = document.getElementById("bottomNotice");
-      document.getElementById("bottomNoticeText").textContent = message;
-      document.getElementById("bottomNoticeActionRow")?.classList.toggle("hidden", !showDownloadBtn);
-      box.classList.remove("hidden");
-      clearTimeout(noticeTimeout);
-      noticeTimeout = setTimeout(() => box.classList.add("hidden"), showDownloadBtn ? 6500 : 2800);
-    }
-
-    function hideBottomNotice() { document.getElementById("bottomNotice")?.classList.add("hidden"); }
-
-    function copyCurrentPlaceId() {
-      if (!activeModalGame) return;
-      const pid = String(activeModalGame.placeId);
-      const helper = document.getElementById("clipboardHelper");
-      if (helper) { helper.value = pid; helper.select(); document.execCommand("copy"); }
-      showBottomNotice("Place ID " + pid + " скопирован в буфер обмена", false);
-    }
-
-    function launchViaRbxClient() {
-      if (!activeModalGame) return;
-      const protocolUrl = "rbxclient://launch?placeId=" + activeModalGame.placeId;
-      showBottomNotice("Запускаем «" + activeModalGame.name + "» (" + protocolUrl + ") в RBX Client 1.4.5...", true);
-      try { window.location.href = protocolUrl; } catch (_e) {}
-    }
-
-    function openInRobloxBrowser() {
-      if (!activeModalGame) return;
-      const url = "https://roblox.com" + activeModalGame.placeId;
-      if (RBXWebShield.isUrlSafe(url)) window.open(url, "_blank", "noopener,noreferrer");
-    }
-
-    document.addEventListener("keydown", (e) => {
-      if (((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") || (e.key === "/" && document.activeElement.tagName !== "INPUT")) {
-        e.preventDefault();
-        const input = document.getElementById("headerSearchInput");
-        if (input) { input.focus(); input.select(); }
-      } else if (e.key === "Escape") { closeGameModal(); hideBottomNotice(); }
+/* ===== Загрузка ===== */
+async function byUniverses(uids,g,force){
+  uids=[...new Set(uids)].filter(Boolean);const out=[];
+  for(let i=0;i<uids.length;i+=50){
+    const ch=uids.slice(i,i+50).join(',');
+    const [a,v]=await Promise.allSettled([j(`${R}games.roproxy.com/v1/games?universeIds=${ch}`),j(`${R}games.roproxy.com/v1/games/votes?universeIds=${ch}`)]);
+    const vm={};((v.value&&v.value.data)||[]).forEach(x=>vm[x.id]=x);
+    ((a.value&&a.value.data)||[]).forEach(x=>{
+      const pid=Number(x.rootPlaceId);if(!pid)return;
+      const playing=Number(x.playing)||0;
+      if(!force&&playing<10)return;
+      const old=G.get(pid)||{};
+      const o={pid,uid:x.id,name:String(x.name||'Без названия'),by:String((x.creator&&x.creator.name)||'—'),playing,up:(vm[x.id]&&vm[x.id].upVotes)||0,down:(vm[x.id]&&vm[x.id].downVotes)||0,g:old.g||g||guess(x.name),icon:old.icon};
+      G.set(pid,o);out.push(o);
     });
+  }
+  return out;
+}
+async function byPlaces(pids,g,force){
+  pids=[...new Set(pids)].filter(Boolean);const uids=[];
+  for(let i=0;i<pids.length;i+=50){
+    try{const d=await j(`${R}games.roproxy.com/v1/games/multiget-place-details?placeIds=${pids.slice(i,i+50).join('&placeIds=')}`);d.forEach(x=>uids.push(x.universeId));}catch(e){}
+  }
+  return byUniverses(uids,g,force);
+}
+async function search(q,g){
+  try{
+    const d=await j(`${R}apis.roproxy.com/search-api/omni-search?searchQuery=${encodeURIComponent(q)}&pageToken=&sessionId=${Math.random().toString(36).slice(2)}&pageType=all`);
+    const ids=[];(d.searchResults||[]).forEach(s=>(s.contents||[]).forEach(c=>{if(c.contentType==='Game'&&(c.playerCount||0)>=10)ids.push(c.contentId);}));
+    return byUniverses(ids,g);
+  }catch(e){
+    try{const d=await j(`${R}games.roproxy.com/v1/games/list?keyword=${encodeURIComponent(q)}&maxRows=40`);return byUniverses((d.games||[]).map(x=>x.universeId),g);}catch(_){return[];}
+  }
+}
+async function icons(pids){
+  pids=pids.filter(p=>G.has(p)&&!G.get(p).icon);
+  for(let i=0;i<pids.length;i+=50){
+    const ch=pids.slice(i,i+50);
+    try{const d=await j(`${R}thumbnails.roproxy.com/v1/places/gameicons?placeIds=${ch.join(',')}&returnPolicy=PlaceHolder&size=256x256&format=Png&isCircular=false`);
+      (d.data||[]).forEach(x=>{const g=G.get(Number(x.targetId));if(g&&x.imageUrl){g.icon=x.imageUrl;const el=document.querySelector(`[data-pid="${g.pid}"] .cover`);if(el)setImg(el,g.icon);}});
+    }catch(e){}
+  }
+}
 
-    iconMap = readIconCache();
-    renderGenreChips();
-    renderCatalogGrid();
-    loadIconsForGames(GAMES_CATALOG);
-    fetchAllRobloxGames("");
-    refreshLiveOnlineStats();
-    setInterval(refreshLiveOnlineStats, 20000);
-  </script>
+/* ===== Рендер ===== */
+function poster(g){
+  let h=0;const s=g.name+g.pid;for(let i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))>>>0;
+  const a=h%360,b=(a+50)%360,l=esc((g.name.trim()[0]||'R').toUpperCase());
+  return `<svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice"><defs><linearGradient id="g${g.pid}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="hsl(${a},60%,28%)"/><stop offset="1" stop-color="hsl(${b},65%,12%)"/></linearGradient></defs><rect width="100" height="100" fill="url(#g${g.pid})"/><circle cx="80" cy="18" r="30" fill="#fff" opacity=".06"/><circle cx="15" cy="90" r="36" fill="#fff" opacity=".05"/><text x="50" y="62" font-size="42" font-weight="800" fill="#fff" opacity=".85" text-anchor="middle" font-family="Inter,sans-serif">${l}</text></svg>`;
+}
+function setImg(cover,url){
+  if(cover.querySelector('img'))return;
+  const im=new Image();im.alt='';im.loading='lazy';
+  im.onload=()=>{im.classList.add('ok');const s=cover.querySelector('.sk');if(s)s.remove();};
+  im.onerror=()=>{im.remove();const s=cover.querySelector('.sk');if(s)s.remove();};
+  im.src=url;cover.appendChild(im);
+}
+const rate=g=>{const t=g.up+g.down;return t?Math.round(g.up/t*100):null;};
+function list(){
+  let a=[...G.values()].filter(g=>g.playing>=10||g.force);
+  if(genre!=='all')a=a.filter(g=>g.g===genre);
+  const q=query.trim().toLowerCase();
+  if(q)a=a.filter(g=>g.name.toLowerCase().includes(q)||String(g.pid).includes(q)||g.by.toLowerCase().includes(q));
+  if(sortBy==='on')a.sort((x,y)=>y.playing-x.playing);
+  else if(sortBy==='rt')a.sort((x,y)=>(rate(y)??-1)-(rate(x)??-1));
+  else a.sort((x,y)=>x.name.localeCompare(y.name,'ru'));
+  return a;
+}
+function render(){
+  const a=list(),grid=$('#grid');
+  $('#cnt').textContent=fmt(a.length);
+  $('#empty').classList.toggle('hidden',a.length>0||loading);
+  grid.innerHTML=a.map(g=>{const r=rate(g);return `<article class="card gc" data-pid="${g.pid}" tabindex="0"><div class="cover">${poster(g)}${g.icon?'':'<div class="sk" style="position:absolute;inset:0;opacity:.35"></div>'}</div><div class="p-3"><h3 class="font-semibold text-sm truncate" title="${esc(g.name)}">${esc(g.name)}</h3><p class="text-xs truncate mt-0.5" style="color:var(--mu)">${esc(g.by)}</p><div class="flex items-center justify-between mt-2 text-xs"><span class="flex items-center gap-1.5" style="color:#4ade80"><span class="dot" style="width:6px;height:6px"></span>${fmt(g.playing)}</span><span style="color:var(--mu)">${r===null?'—':'👍 '+r+'%'}</span></div></div></article>`;}).join('')
+   +(loading?Array(Math.max(0,10-a.length)).fill('<div class="card overflow-hidden"><div class="cover sk"></div><div class="p-3"><div class="sk h-3 rounded w-3/4"></div><div class="sk h-3 rounded w-1/2 mt-2"></div></div></div>').join(''):'');
+  grid.querySelectorAll('.gc').forEach(c=>{const g=G.get(Number(c.dataset.pid));if(g&&g.icon)setImg(c.querySelector('.cover'),g.icon);});
+}
+let loading=false;
+async function loadMore(mode){
+  loading=true;render();
+  try{
+    if(mode==='init'){
+      const bg=shuf(SEEDS);
+      await Promise.all(bg.map(s=>byPlaces([s[0]],s[1]).catch(()=>[])));render();
+    }
+    const gs=Object.keys(GQ),jobs=[];
+    (mode==='init'?gs:shuf(gs).slice(0,4)).forEach(k=>{const qs=GQ[k];jobs.push(search(qs[Math.floor(Math.random()*qs.length)],k));});
+    await Promise.allSettled(jobs);
+  }catch(e){}
+  loading=false;render();icons([...G.keys()]);
+}
+async function live(){
+  const ids=[...G.values()].map(g=>g.uid);if(!ids.length)return;
+  for(let i=0;i<ids.length;i+=50){
+    try{const d=await j(`${R}games.roproxy.com/v1/games?universeIds=${ids.slice(i,i+50).join(',')}`);
+      (d.data||[]).forEach(x=>{const g=G.get(Number(x.rootPlaceId));if(g)g.playing=Number(x.playing)||0;});}catch(e){}
+  }
+  render();if(openPid)fillModal(openPid,true);
+}
+
+/* ===== Чипы, сортировка, поиск ===== */
+$('#chips').innerHTML=GEN.map(c=>`<button class="chip${c[0]==='all'?' on':''}" data-g="${c[0]}">${esc(c[1])}</button>`).join('');
+$('#chips').addEventListener('click',e=>{const b=e.target.closest('.chip');if(!b)return;genre=b.dataset.g;document.querySelectorAll('.chip').forEach(x=>x.classList.toggle('on',x===b));render();});
+$('#sort').addEventListener('change',e=>{sortBy=e.target.value;render();});
+$('#refresh').addEventListener('click',async()=>{
+  const b=$('#refresh');b.disabled=true;b.style.opacity=.6;
+  const keep=[...G.values()];G.clear();shuf(keep).forEach(g=>G.set(g.pid,g));
+  await loadMore('more');b.disabled=false;b.style.opacity=1;toast('Подборка обновлена');
+});
+let st;
+$('#q').addEventListener('input',e=>{
+  query=e.target.value;$('#qx').classList.toggle('hidden',!query);render();
+  clearTimeout(st);const q=query.trim();if(q.length<2)return;
+  st=setTimeout(async()=>{
+    if(/^\d{3,}$/.test(q)){const pid=Number(q);if(!G.has(pid)){loading=true;render();const r=await byPlaces([pid],null,true);r.forEach(g=>g.force=true);loading=false;render();icons([pid]);}}
+    else if(q.length>=3&&list().length<8){loading=true;render();await search(q);loading=false;render();icons([...G.keys()]);}
+  },400);
+});
+function clearQ(){const i=$('#q');i.value='';query='';$('#qx').classList.add('hidden');render();i.focus();}
+$('#qx').addEventListener('click',clearQ);
+document.addEventListener('keydown',e=>{
+  if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'){e.preventDefault();$('#q').focus();$('#q').select();}
+  else if(e.key==='Escape'){if(openPid)closeModal();else if(document.activeElement===$('#q'))clearQ();}
+});
+
+/* ===== Модальное окно ===== */
+let openPid=null;
+function fillModal(pid,keepScroll){
+  const g=G.get(pid);if(!g)return;const r=rate(g);
+  $('#mbox').innerHTML=`<div class="cover" style="border-radius:0">${poster(g)}</div><div class="p-5">
+  <div class="flex items-start justify-between gap-3"><div class="min-w-0"><h3 class="text-xl font-bold break-words">${esc(g.name)}</h3><p class="text-sm mt-0.5" style="color:var(--mu)">Создатель: ${esc(g.by)}</p></div><button id="mx" class="btn" style="padding:.3rem .6rem" aria-label="Закрыть">✕</button></div>
+  <div class="grid grid-cols-2 gap-3 mt-4"><div class="card p-3"><div class="text-xs" style="color:var(--mu)">Онлайн</div><div class="font-bold flex items-center gap-2" style="color:#4ade80"><span class="dot" style="width:7px;height:7px"></span>${fmt(g.playing)}</div></div><div class="card p-3"><div class="text-xs" style="color:var(--mu)">Рейтинг</div><div class="font-bold">${r===null?'—':'👍 '+r+'%'}</div></div></div>
+  <button id="cp" class="btn w-full mt-3" style="justify-content:space-between"><span style="color:var(--mu)">Place ID</span><span><b>${g.pid}</b> &nbsp;⧉ копировать</span></button>
+  <button id="ln" class="btn btn-p w-full mt-3">▶ Запустить через RBX Client</button>
+  <a id="br" class="btn w-full mt-2" target="_blank" rel="noopener noreferrer" href="${'https://www.roblox.com/games/'+g.pid}">Открыть в браузере Roblox</a></div>`;
+  const cv=$('#mbox .cover');if(g.icon)setImg(cv,g.icon);
+  $('#mx').onclick=closeModal;
+  $('#cp').onclick=async()=>{try{await navigator.clipboard.writeText(String(g.pid));}catch(e){const t=document.createElement('textarea');t.value=g.pid;document.body.appendChild(t);t.select();document.execCommand('copy');t.remove();}toast('Place ID скопирован: '+g.pid);};
+  $('#ln').onclick=()=>{location.href='rbxclient://launch?placeId='+encodeURIComponent(g.pid);toast('Запуск через RBX Client… Если ничего не произошло, установите лаунчер.',true);};
+}
+function openModal(pid){openPid=pid;fillModal(pid);const m=$('#modal');m.classList.remove('hidden');m.classList.add('flex');document.body.style.overflow='hidden';}
+function closeModal(){openPid=null;const m=$('#modal');m.classList.add('hidden');m.classList.remove('flex');document.body.style.overflow='';}
+$('#modal').addEventListener('click',e=>{if(e.target.id==='modal')closeModal();});
+$('#grid').addEventListener('click',e=>{const c=e.target.closest('.gc');if(c)openModal(Number(c.dataset.pid));});
+$('#grid').addEventListener('keydown',e=>{if(e.key==='Enter'){const c=e.target.closest('.gc');if(c)openModal(Number(c.dataset.pid));}});
+
+/* ===== Старт ===== */
+loadMore('init');
+setInterval(live,20000);
+</script>
 </body>
 </html>
