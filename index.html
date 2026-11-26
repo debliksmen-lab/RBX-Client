@@ -526,4 +526,360 @@
       const svg = `<svg xmlns="http://w3.org" width="512" height="512" viewBox="0 0 512 512"><defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#141B26"/><stop offset="100%" stop-color="#0D1117"/></linearGradient></defs><rect width="512" height="512" fill="url(#bg)"/><rect x="28" y="28" width="456" height="456" rx="24" fill="none" stroke="#222C3A" stroke-width="2"/><rect x="44" y="44" width="132" height="30" rx="8" fill="#1C2533"/><text x="110" y="64" fill="#93C5FD" font-family="Inter,Segoe UI,sans-serif" font-size="14" font-weight="600" text-anchor="middle">${genre}</text><text x="44" y="395" fill="#E6EDF3" font-family="Inter,Segoe UI,sans-serif" font-size="30" font-weight="700">${title.slice(0, 24)}</text><text x="44" y="432" fill="#7D8590" font-family="monospace" font-size="16">Place ID: ${pid}</text></svg>`;
       return "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg);
     }
+    function readIconCache() {
+      try {
+        const raw = localStorage.getItem(ICON_CACHE_KEY);
+        if (!raw) return {};
+        const parsed = JSON.parse(raw);
+        if (!parsed || Date.now() - Number(parsed.savedAt || 0) > ICON_CACHE_TTL_MS) {
+          localStorage.removeItem(ICON_CACHE_KEY);
+          return {};
+        }
+        return parsed.urls || {};
+      } catch (_e) { return {}; }
+    }
 
+    function writeIconCache(urlsObj) {
+      try { localStorage.setItem(ICON_CACHE_KEY, JSON.stringify({ savedAt: Date.now(), urls: urlsObj })); } catch (_e) {}
+    }
+
+    function attachThumbImageHandlers(imgEl, skeletonEl, game, primaryUrl) {
+      if (!imgEl || !game) return;
+      const fallbackCdnUrl = game.image || "";
+      const svgFallbackUrl = buildSvgPosterFallback(game);
+      imgEl.onload = () => { imgEl.classList.add("is-loaded"); if (skeletonEl) skeletonEl.classList.add("is-hidden"); };
+      imgEl.onerror = () => {
+        const step = Number(imgEl.dataset.fallbackStep || 0);
+        if (step === 0 && fallbackCdnUrl && imgEl.src !== fallbackCdnUrl) { imgEl.dataset.fallbackStep = "1"; imgEl.src = fallbackCdnUrl; }
+        else if (step <= 1 && imgEl.src !== svgFallbackUrl) { imgEl.dataset.fallbackStep = "2"; imgEl.src = svgFallbackUrl; }
+      };
+      const targetSrc = primaryUrl || fallbackCdnUrl || svgFallbackUrl;
+      if (targetSrc && imgEl.dataset.appliedSrc !== targetSrc) {
+        imgEl.dataset.appliedSrc = targetSrc;
+        imgEl.dataset.fallbackStep = primaryUrl ? "0" : "1";
+        imgEl.src = targetSrc;
+      }
+    }
+
+    function applyResolvedIconToDom(placeId, imageUrl) {
+      if (!imageUrl || !RBXWebShield.isUrlSafe(imageUrl)) return;
+      const game = GAMES_CATALOG.find((g) => g.placeId === Number(placeId));
+      document.querySelectorAll(`img[data-place-thumb="${placeId}"]`).forEach((img) => {
+        const wrap = img.closest(".game-thumb-wrap");
+        attachThumbImageHandlers(img, wrap ? wrap.querySelector(".game-thumb-skeleton") : null, game, imageUrl);
+      });
+      if (activeModalGame && activeModalGame.placeId === Number(placeId)) {
+        attachThumbImageHandlers(document.getElementById("modalThumbImg"), document.getElementById("modalThumbSkeleton"), activeModalGame, imageUrl);
+      }
+    }
+
+    async function loadIconsForGames(list) {
+      const ids = list.map((g) => g.placeId).filter((pid) => pid > 0 && !iconMap[String(pid)]).slice(0, 50);
+      if (!ids.length) return;
+      try {
+        const res = await fetch(`https://roproxy.com{ids.join(",")}&returnPolicy=PlaceHolder&size=512x512&format=Png&isCircular=false`);
+        if (!res.ok) return;
+        const data = await res.json();
+        let changed = false;
+        (data.data || []).forEach((item) => {
+          const pid = String(item.targetId || "");
+          const url = String(item.imageUrl || "");
+          if (pid && url && item.state === "Completed" && RBXWebShield.isUrlSafe(url)) {
+            iconMap[pid] = url;
+            const gObj = GAMES_CATALOG.find((g) => String(g.placeId) === pid);
+            if (gObj) gObj.image = url;
+            applyResolvedIconToDom(pid, url);
+            changed = true;
+          }
+        });
+        if (changed) writeIconCache(iconMap);
+      } catch (_e) {}
+    }
+
+    async function fetchAllRobloxGames(query = "") {
+      const cleanQ = String(query || "").trim();
+      try {
+        if (/^\d{4,15}$/.test(cleanQ)) {
+          const r = await fetch(`https://roproxy.com{cleanQ}`);
+          if (r.ok) {
+            const arr = await r.json();
+            if (Array.isArray(arr) && arr[0] && arr[0].placeId) {
+              const row = arr[0];
+              if (!GAMES_CATALOG.some((g) => g.placeId === Number(row.placeId))) {
+                GAMES_CATALOG.unshift({
+                  placeId: Number(row.placeId),
+                  universeId: Number(row.universeId || 0),
+                  name: row.name || `Place #${row.placeId}`,
+                  creator: row.builder || "Roblox",
+                  genre: "Все",
+                  playing: Number(row.playing || 10),
+                  rating: 90,
+                  image: "",
+                  description: row.description || "Режим Roblox из глобального каталога.",
+                });
+              }
+            }
+          }
+        } else {
+          const searchUrl = cleanQ
+            ? `https://roproxy.com{encodeURIComponent(cleanQ)}&sessionId=rbxweb`
+            : `https://roproxy.com`;
+          const res = await fetch(searchUrl);
+          if (res.ok) {
+            const payload = await res.json();
+            const blocks = payload.searchResults || payload.sorts || [];
+            blocks.forEach((blk) => {
+              (blk.contents || blk.games || []).forEach((item) => {
+                const pid = Number(item.rootPlaceId || item.placeId || 0);
+                const uid = Number(item.universeId || item.id || 0);
+                const playing = Number(item.playerCount || item.playing || 0);
+                if (pid > 0 && playing >= 10 && !GAMES_CATALOG.some((g) => g.placeId === pid)) {
+                  GAMES_CATALOG.push({
+                    placeId: pid,
+                    universeId: uid,
+                    name: item.name || `Place #${pid}`,
+                    creator: item.creatorName || "Roblox",
+                    genre: "Все",
+                    playing,
+                    rating: 90,
+                    image: "",
+                    description: "Режим из глобального каталога Roblox (от 10+ игроков онлайн).",
+                  });
+                }
+              });
+            });
+          }
+        }
+        renderCatalogGrid();
+        loadIconsForGames(getFilteredGames());
+      } catch (_e) {}
+    }
+
+    async function refreshLiveOnlineStats() {
+      const now = Date.now();
+      if (now - lastStatsFetchAt < 18000) return;
+      lastStatsFetchAt = now;
+      const uids = GAMES_CATALOG.map((g) => g.universeId).filter(Boolean).slice(0, 50).join(",");
+      if (!uids) return;
+      try {
+        const res = await fetch(`https://roproxy.com{uids}`);
+        if (!res.ok) return;
+        const payload = await res.json();
+        (payload.data || []).forEach((row) => {
+          const gameObj = GAMES_CATALOG.find((g) => g.universeId === Number(row.id || 0));
+          const livePlaying = Number(row.playing || 0);
+          if (gameObj && livePlaying > 0) {
+            gameObj.playing = livePlaying;
+            const el = document.querySelector(`[data-live-playing="${gameObj.placeId}"]`);
+            if (el) el.textContent = formatCompactNumber(livePlaying);
+            if (activeModalGame && activeModalGame.placeId === gameObj.placeId) {
+              document.getElementById("modalOnline").textContent = formatCompactNumber(livePlaying);
+            }
+          }
+        });
+      } catch (_e) {}
+    }
+
+    function renderGenreChips() {
+      const container = document.getElementById("genreChipsContainer");
+      if (!container) return;
+      container.innerHTML = "";
+      GENRE_LIST.forEach((genre) => {
+        const isSelected = selectedGenre === genre;
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.textContent = genre;
+        btn.className = isSelected
+          ? "h-8 px-3 rounded-[8px] bg-[#2563EB] text-white text-xs font-semibold whitespace-nowrap cursor-pointer transition"
+          : "h-8 px-3 rounded-[8px] bg-[#12161D] hover:bg-[#161B22] text-[#8B949E] hover:text-[#E6EDF3] border border-[#1E242E] text-xs font-medium whitespace-nowrap cursor-pointer transition";
+        btn.addEventListener("click", () => { selectedGenre = genre; renderGenreChips(); renderCatalogGrid(); });
+        container.appendChild(btn);
+      });
+    }
+
+    function getFilteredGames() {
+      const q = searchQuery.trim().toLowerCase();
+      const sortMode = (document.getElementById("sortSelect") || {}).value || "online";
+      const list = GAMES_CATALOG.filter((g) => {
+        if (Number(g.playing || 0) < 10) return false;
+        if (selectedGenre !== "Все" && g.genre !== selectedGenre) return false;
+        if (!q) return true;
+        return g.name.toLowerCase().includes(q) || g.creator.toLowerCase().includes(q) || String(g.placeId).includes(q);
+      });
+      list.sort((a, b) => sortMode === "rating" ? b.rating - a.rating : (sortMode === "name" ? a.name.localeCompare(b.name, "ru") : b.playing - a.playing));
+      return list;
+    }
+
+    function renderCatalogGrid() {
+      const grid = document.getElementById("gamesGrid");
+      const emptyEl = document.getElementById("catalogEmptyState");
+      const countEl = document.getElementById("catalogCountLabel");
+      if (!grid) return;
+      const filtered = getFilteredGames();
+      if (countEl) countEl.textContent = `Показано ${filtered.length} игр (все режимы 10+ онлайн)`;
+      grid.innerHTML = "";
+      if (!filtered.length) { if (emptyEl) emptyEl.classList.remove("hidden"); return; }
+      if (emptyEl) emptyEl.classList.add("hidden");
+
+      filtered.forEach((game) => {
+        const resolvedUrl = iconMap[String(game.placeId)] || game.image || "";
+        const safeName = RBXWebShield.sanitizeText(game.name);
+        const safeCreator = RBXWebShield.sanitizeText(game.creator);
+        const safeGenre = RBXWebShield.sanitizeText(game.genre);
+        const card = document.createElement("article");
+        card.className = "surface-card surface-card-hover overflow-hidden flex flex-col justify-between cursor-pointer group";
+        card.addEventListener("click", () => openGameModal(game.placeId));
+        card.innerHTML = `
+          <div>
+            <div class="game-thumb-wrap border-b border-[#1E242E]">
+              <div class="game-thumb-skeleton"></div>
+    function renderCatalogGrid() {
+      const grid = document.getElementById("gamesGrid");
+      const emptyEl = document.getElementById("catalogEmptyState");
+      const countEl = document.getElementById("catalogCountLabel");
+      if (!grid) return;
+      const filtered = getFilteredGames();
+      if (countEl) countEl.textContent = `Показано ${filtered.length} игр (все режимы 10+ онлайн)`;
+      grid.innerHTML = "";
+      if (!filtered.length) { if (emptyEl) emptyEl.classList.remove("hidden"); return; }
+      if (emptyEl) emptyEl.classList.add("hidden");
+
+      filtered.forEach((game) => {
+        const resolvedUrl = iconMap[String(game.placeId)] || game.image || "";
+        const safeName = RBXWebShield.sanitizeText(game.name);
+        const safeCreator = RBXWebShield.sanitizeText(game.creator);
+        const safeGenre = RBXWebShield.sanitizeText(game.genre);
+        const card = document.createElement("article");
+        card.className = "surface-card surface-card-hover overflow-hidden flex flex-col justify-between cursor-pointer group";
+        card.addEventListener("click", () => openGameModal(game.placeId));
+        card.innerHTML =
+          '<div>' +
+            '<div class="game-thumb-wrap border-b border-[#1E242E]">' +
+              '<div class="game-thumb-skeleton"></div>' +
+              '<img data-place-thumb="' + game.placeId + '" alt="' + safeName + '" class="game-thumb-img absolute inset-0" />' +
+              '<span class="absolute top-2 left-2 z-10 px-1.5 py-0.5 rounded-[5px] bg-[#0B0E11]/85 text-[#8B949E] border border-[#1E242E] text-[10px] font-medium">' + safeGenre + '</span>' +
+            '</div>' +
+            '<div class="p-3 pb-2 space-y-1">' +
+              '<h3 class="text-[13px] sm:text-sm font-semibold text-[#E6EDF3] leading-snug line-clamp-2 min-h-[38px] group-hover:text-white">' + safeName + '</h3>' +
+              '<p class="text-[11px] sm:text-xs text-[#7D8590] truncate">' + safeCreator + '</p>' +
+            '</div>' +
+          '</div>' +
+          '<div class="px-3 pb-3 pt-1 flex items-center justify-between gap-2 text-[11px] sm:text-xs">' +
+            '<span class="inline-flex items-center gap-1.5 font-semibold text-[#E6EDF3]">' +
+              '<span class="w-2 h-2 rounded-full bg-emerald-400 shrink-0"></span>' +
+              '<span data-live-playing="' + game.placeId + '">' + formatCompactNumber(game.playing) + '</span>' +
+            '</span>' +
+            '<span class="text-[#8B949E] font-medium">' + game.rating + '%</span>' +
+          '</div>';
+        grid.appendChild(card);
+        attachThumbImageHandlers(card.querySelector("img"), card.querySelector(".game-thumb-skeleton"), game, resolvedUrl);
+      });
+    }
+    let searchDebounce = null;
+    function onSearchQueryChanged(val) {
+      searchQuery = String(val || "").slice(0, 80);
+      const hasText = searchQuery.trim().length > 0;
+      document.getElementById("headerSearchClear")?.classList.toggle("hidden", !hasText);
+      document.getElementById("headerSearchShortcut")?.classList.toggle("hidden", hasText);
+      renderCatalogGrid();
+      clearTimeout(searchDebounce);
+      if (hasText) searchDebounce = setTimeout(() => fetchAllRobloxGames(searchQuery), 350);
+    }
+
+    function clearSearchQuery() {
+      const input = document.getElementById("headerSearchInput");
+      if (input) { input.value = ""; input.focus(); }
+      onSearchQueryChanged("");
+    }
+
+    function resetAllFilters() {
+      selectedGenre = "Все";
+      const sortSel = document.getElementById("sortSelect");
+      if (sortSel) sortSel.value = "online";
+      clearSearchQuery();
+      renderGenreChips();
+      renderCatalogGrid();
+    }
+
+    function openGameModal(placeId) {
+      const game = GAMES_CATALOG.find((g) => g.placeId === Number(placeId));
+      if (!game) return;
+      activeModalGame = game;
+      const thumbImg = document.getElementById("modalThumbImg");
+      const thumbSkeleton = document.getElementById("modalThumbSkeleton");
+      if (thumbSkeleton) thumbSkeleton.classList.remove("is-hidden");
+      if (thumbImg) {
+        thumbImg.classList.remove("is-loaded");
+        thumbImg.dataset.appliedSrc = "";
+        attachThumbImageHandlers(thumbImg, thumbSkeleton, game, iconMap[String(game.placeId)] || game.image || "");
+      }
+      document.getElementById("modalGenre").textContent = game.genre;
+      document.getElementById("modalTitle").textContent = game.name;
+      document.getElementById("modalCreator").textContent = "Создатель: " + game.creator;
+      document.getElementById("modalOnline").textContent = formatCompactNumber(game.playing);
+      document.getElementById("modalRating").textContent = "Лайки: " + game.rating + "%";
+      document.getElementById("modalPlaceId").textContent = String(game.placeId);
+      document.getElementById("modalDescription").textContent = game.description;
+      const modal = document.getElementById("gameModal");
+      modal.classList.remove("hidden");
+      modal.classList.add("flex");
+    }
+
+    function closeGameModal() {
+      const modal = document.getElementById("gameModal");
+      if (modal) { modal.classList.add("hidden"); modal.classList.remove("flex"); }
+      activeModalGame = null;
+    }
+
+    function onModalOverlayClick(e) { if (e.target && e.target.id === "gameModal") closeGameModal(); }
+
+    function showBottomNotice(message, showDownloadBtn = false) {
+      const box = document.getElementById("bottomNotice");
+      document.getElementById("bottomNoticeText").textContent = message;
+      document.getElementById("bottomNoticeActionRow")?.classList.toggle("hidden", !showDownloadBtn);
+      box.classList.remove("hidden");
+      clearTimeout(noticeTimeout);
+      noticeTimeout = setTimeout(() => box.classList.add("hidden"), showDownloadBtn ? 6500 : 2800);
+    }
+
+    function hideBottomNotice() { document.getElementById("bottomNotice")?.classList.add("hidden"); }
+
+    function copyCurrentPlaceId() {
+      if (!activeModalGame) return;
+      const pid = String(activeModalGame.placeId);
+      const helper = document.getElementById("clipboardHelper");
+      if (helper) { helper.value = pid; helper.select(); document.execCommand("copy"); }
+      showBottomNotice("Place ID " + pid + " скопирован в буфер обмена", false);
+    }
+
+    function launchViaRbxClient() {
+      if (!activeModalGame) return;
+      const protocolUrl = "rbxclient://launch?placeId=" + activeModalGame.placeId;
+      showBottomNotice("Запускаем «" + activeModalGame.name + "» (" + protocolUrl + ") в RBX Client 1.4.5...", true);
+      try { window.location.href = protocolUrl; } catch (_e) {}
+    }
+
+    function openInRobloxBrowser() {
+      if (!activeModalGame) return;
+      const url = "https://roblox.com" + activeModalGame.placeId;
+      if (RBXWebShield.isUrlSafe(url)) window.open(url, "_blank", "noopener,noreferrer");
+    }
+
+    document.addEventListener("keydown", (e) => {
+      if (((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") || (e.key === "/" && document.activeElement.tagName !== "INPUT")) {
+        e.preventDefault();
+        const input = document.getElementById("headerSearchInput");
+        if (input) { input.focus(); input.select(); }
+      } else if (e.key === "Escape") { closeGameModal(); hideBottomNotice(); }
+    });
+
+    iconMap = readIconCache();
+    renderGenreChips();
+    renderCatalogGrid();
+    loadIconsForGames(GAMES_CATALOG);
+    fetchAllRobloxGames("");
+    refreshLiveOnlineStats();
+    setInterval(refreshLiveOnlineStats, 20000);
+  </script>
+</body>
+</html>
